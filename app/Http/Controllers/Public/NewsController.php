@@ -3,29 +3,21 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\News;
 
 class NewsController extends Controller
 {
     public function index()
     {
-        $search     = request('search');
-        $categoryId = request('category');
-        $categories = Category::orderBy('name')->get();
+        $search = request('search');
 
         $news = News::with(['category', 'user'])
-            ->when($search, function ($query, $search) {
-                $query->where('title', 'like', "%{$search}%");
-            })
-            ->when($categoryId, function ($query, $categoryId) {
-                $query->where('category_id', $categoryId);
-            })
+            ->when($search, fn($q, $s) => $q->where('title', 'like', "%{$s}%"))
             ->latest('publish_date')
             ->paginate(9)
             ->withQueryString();
 
-        return view('public.news.index', compact('news', 'categories', 'search', 'categoryId'));
+        return view('public.news.index', compact('news', 'search'));
     }
 
     public function show(string $slug)

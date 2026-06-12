@@ -1,33 +1,28 @@
 @extends('layouts.admin')
-
-@section('title', 'Edit Berita')
-@section('page-title', 'Edit Berita')
+@section('title','Edit Berita')
+@section('page-title','Edit Berita')
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-lg-9">
-        <div class="card">
-            <div class="card-header py-3 px-4">
-                <i class="bi bi-pencil me-2 text-primary"></i>Edit Berita
-            </div>
-            <div class="card-body p-4">
-                <form action="{{ route('admin.news.update', $news) }}" method="POST" enctype="multipart/form-data">
+        <div class="adm-card">
+            <div class="adm-card-header"><i class="bi bi-pencil me-2" style="color:var(--ac)"></i>Edit Berita</div>
+            <div style="padding:1.5rem">
+                <form action="{{ route('admin.news.update',$news) }}" method="POST" enctype="multipart/form-data">
                     @csrf @method('PUT')
                     <div class="row g-3 mb-3">
                         <div class="col-md-8">
-                            <label class="form-label">Judul Berita <span class="text-danger">*</span></label>
+                            <label class="form-label">Judul Berita <span style="color:#dc2626">*</span></label>
                             <input type="text" name="title" class="form-control @error('title') is-invalid @enderror"
-                                   value="{{ old('title', $news->title) }}">
+                                   value="{{ old('title',$news->title) }}">
                             @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Kategori <span class="text-danger">*</span></label>
+                            <label class="form-label">Kategori <span style="color:#dc2626">*</span></label>
                             <select name="category_id" class="form-select @error('category_id') is-invalid @enderror">
-                                <option value="">-- Pilih Kategori --</option>
+                                <option value="">-- Pilih --</option>
                                 @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ old('category_id', $news->category_id) == $cat->id ? 'selected' : '' }}>
-                                    {{ $cat->name }}
-                                </option>
+                                <option value="{{ $cat->id }}" {{ old('category_id',$news->category_id)==$cat->id?'selected':'' }}>{{ $cat->name }}</option>
                                 @endforeach
                             </select>
                             @error('category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -35,39 +30,37 @@
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Tanggal Terbit <span class="text-danger">*</span></label>
+                            <label class="form-label">Tanggal Terbit <span style="color:#dc2626">*</span></label>
                             <input type="date" name="publish_date" class="form-control @error('publish_date') is-invalid @enderror"
-                                   value="{{ old('publish_date', $news->publish_date->format('Y-m-d')) }}">
+                                   value="{{ old('publish_date',$news->publish_date->format('Y-m-d')) }}">
                             @error('publish_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Gambar Sampul</label>
                             @if($news->image)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $news->image) }}" style="height:80px;border-radius:8px;object-fit:cover" alt="">
-                                <div class="form-text">Upload baru untuk mengganti gambar saat ini.</div>
+                            <div style="margin-bottom:.5rem">
+                                <img src="{{ asset('storage/'.$news->image) }}" style="height:65px;border-radius:var(--radius);object-fit:cover" alt="">
+                                <div class="form-text">Upload baru untuk mengganti.</div>
                             </div>
                             @endif
                             <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
-                                   accept="image/jpg,image/jpeg,image/png,image/webp" onchange="previewImage(this)">
-                            <div class="form-text">Format: jpg, jpeg, png, webp. Maks 2MB.</div>
+                                   accept="image/jpg,image/jpeg,image/png,image/webp" onchange="previewImg(this,'imgPrev')">
+                            <div class="form-text">JPG, PNG, WEBP · Maks 2MB</div>
                             @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
-                    <div id="imagePreviewWrap" class="mb-3" style="display:none">
-                        <img id="imagePreview" src="" alt="Preview" style="max-height:200px;border-radius:10px;object-fit:cover">
+                    <div id="imgPrev" style="margin-bottom:1rem;display:none">
+                        <img id="imgPrevSrc" src="" style="max-height:180px;border-radius:var(--radius);object-fit:cover" alt="">
                     </div>
                     <div class="mb-4">
-                        <label class="form-label">Isi Berita <span class="text-danger">*</span></label>
+                        <label class="form-label">Isi Berita <span style="color:#dc2626">*</span></label>
                         <textarea name="content" class="form-control @error('content') is-invalid @enderror"
-                                  rows="12">{{ old('content', $news->content) }}</textarea>
+                                  rows="11">{{ old('content',$news->content) }}</textarea>
                         @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-save me-2"></i>Perbarui Berita
-                        </button>
-                        <a href="{{ route('admin.news.index') }}" class="btn btn-outline-secondary px-4">Batal</a>
+                    <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+                        <button type="submit" class="btn-ac btn-ac-primary"><i class="bi bi-save me-1"></i>Perbarui</button>
+                        <a href="{{ route('admin.news.index') }}" class="btn-ac btn-ac-secondary">Batal</a>
                     </div>
                 </form>
             </div>
@@ -75,18 +68,6 @@
     </div>
 </div>
 @endsection
-
 @push('scripts')
-<script>
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('imagePreview').src = e.target.result;
-            document.getElementById('imagePreviewWrap').style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-</script>
+<script>function previewImg(input,wrapId){if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{document.getElementById('imgPrevSrc').src=e.target.result;document.getElementById(wrapId).style.display='block';};r.readAsDataURL(input.files[0]);}}</script>
 @endpush

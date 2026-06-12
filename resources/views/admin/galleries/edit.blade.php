@@ -1,51 +1,47 @@
 @extends('layouts.admin')
-
-@section('title', 'Edit Galeri')
-@section('page-title', 'Edit Galeri')
+@section('title','Edit Galeri')
+@section('page-title','Edit Galeri')
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card">
-            <div class="card-header py-3 px-4">
-                <i class="bi bi-pencil me-2 text-primary"></i>Edit Galeri
-            </div>
-            <div class="card-body p-4">
-                <form action="{{ route('admin.galleries.update', $gallery) }}" method="POST" enctype="multipart/form-data">
+    <div class="col-md-7 col-lg-6">
+        <div class="adm-card">
+            <div class="adm-card-header"><i class="bi bi-pencil me-2" style="color:var(--ac)"></i>Edit Galeri</div>
+            <div style="padding:1.5rem">
+                <form action="{{ route('admin.galleries.update',$gallery) }}" method="POST" enctype="multipart/form-data">
                     @csrf @method('PUT')
                     <div class="mb-3">
-                        <label class="form-label">Judul Galeri <span class="text-danger">*</span></label>
+                        <label class="form-label">Judul Galeri <span style="color:#dc2626">*</span></label>
                         <input type="text" name="title" class="form-control @error('title') is-invalid @enderror"
-                               value="{{ old('title', $gallery->title) }}">
+                               value="{{ old('title',$gallery->title) }}">
                         @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Deskripsi</label>
                         <textarea name="description" class="form-control @error('description') is-invalid @enderror"
-                                  rows="4">{{ old('description', $gallery->description) }}</textarea>
+                                  rows="4">{{ old('description',$gallery->description) }}</textarea>
                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Cover Image</label>
                         @if($gallery->cover_image)
-                        <div class="mb-2">
-                            <img src="{{ asset('storage/' . $gallery->cover_image) }}" style="height:80px;border-radius:8px;object-fit:cover" alt="">
-                            <div class="form-text">Upload baru untuk mengganti cover saat ini.</div>
+                        <div style="margin-bottom:.5rem">
+                            <img src="{{ asset('storage/'.$gallery->cover_image) }}"
+                                 style="height:65px;border-radius:var(--radius);object-fit:cover" alt="">
+                            <div class="form-text">Upload baru untuk mengganti.</div>
                         </div>
                         @endif
                         <input type="file" name="cover_image" class="form-control @error('cover_image') is-invalid @enderror"
-                               accept="image/jpg,image/jpeg,image/png,image/webp" onchange="previewImage(this)">
-                        <div class="form-text">Format: jpg, jpeg, png, webp. Maks 2MB.</div>
+                               accept="image/jpg,image/jpeg,image/png,image/webp" onchange="previewImg(this,'prev')">
+                        <div class="form-text">JPG, PNG, WEBP &bull; Maks 2MB</div>
                         @error('cover_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <div id="previewWrap" class="mt-2" style="display:none">
-                            <img id="imagePreview" src="" style="max-height:180px;border-radius:10px;object-fit:cover" alt="">
+                        <div id="prev" style="margin-top:.7rem;display:none">
+                            <img id="prevImg" src="" style="max-height:160px;border-radius:var(--radius);object-fit:cover" alt="">
                         </div>
                     </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-save me-2"></i>Perbarui
-                        </button>
-                        <a href="{{ route('admin.galleries.index') }}" class="btn btn-outline-secondary px-4">Batal</a>
+                    <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+                        <button type="submit" class="btn-ac btn-ac-primary"><i class="bi bi-save me-1"></i>Perbarui</button>
+                        <a href="{{ route('admin.galleries.index') }}" class="btn-ac btn-ac-secondary">Batal</a>
                     </div>
                 </form>
             </div>
@@ -53,18 +49,6 @@
     </div>
 </div>
 @endsection
-
 @push('scripts')
-<script>
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('imagePreview').src = e.target.result;
-            document.getElementById('previewWrap').style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-</script>
+<script>function previewImg(input,id){if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{document.getElementById('prevImg').src=e.target.result;document.getElementById(id).style.display='block';};r.readAsDataURL(input.files[0]);}}</script>
 @endpush
